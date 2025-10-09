@@ -1,0 +1,60 @@
+.login-wrapper {
+  background-color: #e367ee;
+  overflow: hidden;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  border-radius: 12px;
+}
+
+.circle-bg {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  z-index: 0;
+}
+
+.circle-left {
+  background-color: rgba(139, 146, 245, 0.15);
+  top: -100px;
+  left: -100px;
+}
+
+.circle-right {
+  background-color: rgba(206, 88, 224, 0.7);
+  bottom: -100px;
+  right: -100px;
+}
+/* Animated error outside the card */
+
+.animated-error {
+  position: absolute;
+  top: 20px; /* above card */
+  left: 0;
+  transform: translateX(-100%);
+  animation: slideIn 0.5s forwards;
+  z-index: 9999;
+  min-width: 300px;
+}
+
+/* Slide-in animation */
+@keyframes slideIn {
+  to {
+    transform: translateX(20px); /* slight padding from left */
+  }
+}
+
+/* Optional: fade-out after 5s */
+.animated-error.ng-hide {
+  animation: slideOut 0.5s forwards;
+}
+
+@keyframes slideOut {
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}

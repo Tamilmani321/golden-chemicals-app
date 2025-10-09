@@ -1,0 +1,60 @@
+<div class="container">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h2>Parties</h2>
+    <input type="text" [(ngModel)]="searchTerm" placeholder="Search by name or mobile..." />
+
+    <div class="party-card"
+         *ngFor="let party of filteredParties"
+         [class.active]="party.id === selectedParty?.id"
+         (click)="selectParty(party)">
+      <div class="party-info">
+        <h3>{{ party.name }}</h3>
+        <p>{{ party.mobileNumber }}</p>
+      </div>
+      <div class="party-balance" [ngClass]="getBalanceClass(party.balance)">
+        ₱{{ party.balance | number:'1.2-2' }}
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content" *ngIf="selectedParty">
+    <div class="header">
+      <h2>{{ selectedParty.name }}</h2>
+      <p>📞 {{ selectedParty.mobileNumber }}</p>
+      <p class="balance">Current Balance: ₱{{ selectedParty.balance | number:'1.2-2' }}</p>
+    </div>
+
+    <div class="actions">
+      <button class="btn">🖨️ Print</button>
+      <button class="btn primary">➕ Add Transaction</button>
+    </div>
+
+    <table class="transaction-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Description</th>
+          <th>Type</th>
+          <th>Amount</th>
+          <th>Balance</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let txn of selectedParty.transactions">
+          <td>{{ txn.date }}</td>
+          <td>{{ txn.description }}</td>
+          <td><span class="type" [ngClass]="txn.type">{{ txn.type }}</span></td>
+          <td>₱{{ txn.amount | number:'1.2-2' }}</td>
+          <td>₱{{ txn.balance | number:'1.2-2' }}</td>
+          <td>
+            <button class="icon-btn">✏️</button>
+            <button class="icon-btn">🗑️</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </main>
+</div>

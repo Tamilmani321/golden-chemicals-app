@@ -1,0 +1,136 @@
+.container {
+  display: flex;
+  height: 100vh;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f5f7fa;
+}
+
+.sidebar {
+  width: 300px;
+  background-color: #fff;
+  border-right: 1px solid #ddd;
+  padding: 20px;
+}
+
+.sidebar h2 {
+  margin-bottom: 10px;
+  color: #2c3e50;
+}
+
+.sidebar input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.party-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  background-color: #f9f9f9;
+  transition: background 0.3s;
+}
+
+.party-card.active {
+  background-color: #f39c12;
+  color: white;
+}
+
+.party-info h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.party-info p {
+  margin: 2px 0;
+  font-size: 13px;
+  color: #888;
+}
+
+.party-balance {
+  font-weight: bold;
+}
+
+.green {
+  color: green;
+}
+
+.red {
+  color: red;
+}
+
+.main-content {
+  flex: 1;
+  padding: 30px;
+}
+
+.header h2 {
+  margin: 0;
+  color: #2c3e50;
+}
+
+.header p {
+  margin: 5px 0;
+  color: #555;
+}
+
+.balance {
+  font-weight: bold;
+  color: green;
+}
+
+.actions {
+  margin: 20px 0;
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  background-color: #bdc3c7;
+  color: white;
+  cursor: pointer;
+}
+
+.btn.primary {
+  background-color: #2980b9;
+}
+
+.transaction-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.transaction-table th,
+.transaction-table td {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+
+.type.credit {
+  color: green;
+  font-weight: bold;
+}
+
+.type.debit {
+  color: red;
+  font-weight: bold;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}

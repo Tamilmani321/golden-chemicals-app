@@ -1,0 +1,99 @@
+<div class="login-wrapper d-flex align-items-center justify-content-center min-vh-100 position-relative">
+  <!-- Left circle -->
+  <div class="circle-bg circle-left"></div>
+  <!-- Right circle -->
+  <div class="circle-bg circle-right"></div>
+
+  <!-- Animated error container outside the card -->
+  <div *ngIf="showError" class="alert alert-danger animated-error">
+    {{ errorMessage }}
+  </div>
+
+  <div class="card shadow-lg border-0 p-4 login-card position-relative">
+    <div class="text-center mb-3">
+      <i class="bi bi-file-earmark-text fs-2 text-primary"></i>
+      <h4 class="mt-2 fw-bold">GM</h4>
+    </div>
+
+    <h5 class="fw-bold mb-2">Login</h5>
+    <p class="text-muted mb-4">Enter your username below to login to your account.</p>
+
+    <form #loginForm="ngForm" (ngSubmit)="onLogin(loginForm)" novalidate>
+      <!-- Username -->
+      <div class="mb-3 position-relative">
+        <label for="username" class="form-label fw-semibold">Username</label>
+        <input
+          type="text"
+          id="username"
+          class="form-control"
+          placeholder="name@example.com"
+          [(ngModel)]="username"
+          name="username"
+          required
+          minlength="5"
+          #usernameField="ngModel"
+          [ngClass]="{
+            'is-invalid': usernameField.invalid && (usernameField.dirty || usernameField.touched || loginForm.submitted),
+            'is-valid': usernameField.valid && (usernameField.dirty || usernameField.touched || loginForm.submitted)
+          }"
+        />
+        <!-- ✅ Tick icon when valid -->
+        <i *ngIf="usernameField.valid && (usernameField.dirty || usernameField.touched || loginForm.submitted)"
+           class="bi bi-check-circle-fill text-success position-absolute end-0 top-50 translate-middle-y me-3"></i>
+
+        <div *ngIf="usernameField.invalid && (usernameField.dirty || usernameField.touched || loginForm.submitted)"
+             class="text-danger small mt-1">
+          <div *ngIf="usernameField.errors?.['required']">Username is required.</div>
+          <div *ngIf="usernameField.errors?.['minlength']">Username must be at least 6 characters.</div>
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="mb-3 position-relative">
+        <label for="password" class="form-label fw-semibold">Password</label>
+        <input
+          type="password"
+          id="password"
+          class="form-control"
+          placeholder="••••••••"
+          [(ngModel)]="password"
+          name="password"
+          required
+          minlength="6"
+          #passwordField="ngModel"
+          [ngClass]="{
+            'is-invalid': passwordField.invalid && (passwordField.dirty || passwordField.touched || loginForm.submitted),
+            'is-valid': passwordField.valid && (passwordField.dirty || passwordField.touched || loginForm.submitted)
+          }"
+        />
+        <!-- ✅ Tick icon when valid -->
+        <i *ngIf="passwordField.valid && (passwordField.dirty || passwordField.touched || loginForm.submitted)"
+           class="bi bi-check-circle-fill text-success position-absolute end-0 top-50 translate-middle-y me-3"></i>
+
+        <div *ngIf="passwordField.invalid && (passwordField.dirty || passwordField.touched || loginForm.submitted)" class="text-danger small mt-1">
+          <div *ngIf="passwordField.errors?.['required']">Password is required.</div>
+          <div *ngIf="passwordField.errors?.['minlength']">Password must be at least 6 characters.</div>
+        </div>
+      </div>
+
+      <!-- Global error message -->
+      <div *ngIf="loginForm.submitted && loginForm.invalid" class="alert alert-danger py-2">
+        Please fill in all required fields correctly.
+      </div>
+
+      <!-- <div *ngIf="errorMessage" class="alert alert-danger py-2 mt-2">
+          {{ errorMessage }}
+      </div> -->
+      <!-- Animated backend error message -->
+
+
+      <!-- Submit -->
+      <button type="submit" class="btn btn-primary w-100 mt-2" [disabled]="loading">
+         <span *ngIf="!loading">Sign in</span>
+            <div *ngIf="loading" class="spinner-border spinner-border-sm text-light" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+      </button>
+    </form>
+  </div>
+</div>
