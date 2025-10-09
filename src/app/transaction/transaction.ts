@@ -1,25 +1,28 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { Party, PartyItem } from '../party/party';
+import { Party, PartyItem, Transaction } from '../party/party';
+import { TransactionService } from '../services/transaction.service';
+import { CommonModule, DecimalPipe, NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-transaction',
   standalone: true,
-  imports: [],
+  imports: [CommonModule,DecimalPipe, NgClass],
   templateUrl: './transaction.html',
   styleUrl: './transaction.css'
 })
 export class TransactionComponent  implements OnChanges{
-  @Input() party: PartyItem | null = null;
-  constructor(private http: HttpClient) {}
+ @Input() party: PartyItem | null = null;
+  transactions: Transaction[] = [];
+
+  constructor(private transactionService: TransactionService) {}
 
   ngOnChanges(): void {
-    if(this.party){
-       const url = `http://localhost:8080/gmd/transaction/${this.party.id}`;
-        this.http.get(url).subscribe({
+    if (this.party) {
+      this.transactionService.getTransactionsByPartyId(this.party.id).subscribe({
         next: (data) => {
-          console.log("Data:", JSON.stringify(data, null, 2));
-          this.party!.transactions = data as any[]; // ideally type this properly
+          console.log('Fetched transactions:', data);
+          this.transactions = data;
         },
         error: (err) => {
           console.error('Failed to fetch transactions:', err);

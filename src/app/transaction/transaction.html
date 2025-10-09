@@ -1,1 +1,32 @@
-<p>transaction works!</p>
+<table class="transaction-table" *ngIf="transactions.length > 0">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Description</th>
+      <th>Type</th>
+      <th>Amount</th>
+      <th>Balance</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let txn of transactions">
+      <td>{{ txn.date }}</td>
+      <td>{{ txn.description }}</td>
+      <td>
+        <span class="type" [ngClass]="txn.type">{{ txn.type }}</span>
+      </td>
+      <td>₱{{ txn.amount | number:'1.2-2' }}</td>
+      <td>₱{{ txn.balance | number:'1.2-2' }}</td>
+      <td>
+        <button class="icon-btn">✏️</button>
+        <button class="icon-btn">🗑️</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- Optional: Empty state -->
+<div *ngIf="transactions.length === 0">
+  <p>No transactions found for this party.</p>
+</div>
