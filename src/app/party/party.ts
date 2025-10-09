@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { PartyService } from '../services/partyService';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TransactionComponent  } from '../transaction/transaction';
 
-interface Transaction {
+export interface Transaction {
   date: string;
   description: string;
   type: 'credit' | 'debit';
@@ -11,7 +12,7 @@ interface Transaction {
   balance: number;
 }
 
-interface PartyItem {
+export interface PartyItem {
   id: number;
   name: string;
   mobileNumber: string;
@@ -23,7 +24,7 @@ interface PartyItem {
 @Component({
   selector: 'app-party',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,TransactionComponent ],
   templateUrl: './party.html',
   styleUrl: './party.css'
 })
@@ -31,6 +32,9 @@ export class Party implements OnInit {
   searchTerm: string = '';
   partyData: PartyItem[] = [];
   selectedParty: PartyItem | null = null;
+  transactions: Transaction[] = [];
+
+
 
   constructor(private partyService: PartyService) {}
 
@@ -56,6 +60,7 @@ export class Party implements OnInit {
 
   selectParty(party: PartyItem): void {
     this.selectedParty = party;
+    this.selectedParty.id;
   }
 
   getBalanceClass(balance: number): string {
