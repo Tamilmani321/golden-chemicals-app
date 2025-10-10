@@ -1,0 +1,66 @@
+<h2 mat-dialog-title>Add Transaction</h2>
+
+<form [formGroup]="transactionForm" (ngSubmit)="onSave()" mat-dialog-content>
+  <div class="row">
+    <div class="col-12 mb-3">
+      <mat-form-field appearance="outline" class="w-100">
+  <mat-label>Date *</mat-label>
+  <input matInput [matDatepicker]="picker" formControlName="txDate" />
+  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-datepicker #picker></mat-datepicker>
+  <!-- <mat-error *ngIf="transactionForm.get('txDate')?.hasError('required')">
+    Date is required
+  </mat-error> -->
+</mat-form-field>
+
+    </div>
+
+    <div class="col-12 mb-3">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Product *</mat-label>
+        <input matInput formControlName="product" placeholder="e.g., Goods, Service" />
+        <mat-error *ngIf="transactionForm.get('product')?.hasError('required')">
+          Product is required
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 mb-3">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Remark (Optional)</mat-label>
+        <textarea matInput formControlName="remark" placeholder="Any notes..."></textarea>
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 mb-3">
+      <label class="mb-2 d-block">Type *</label>
+      <mat-radio-group formControlName="type" class="d-flex gap-4">
+        <mat-radio-button value="CREDIT">Credit</mat-radio-button>
+        <mat-radio-button value="DEBIT">Debit</mat-radio-button>
+      </mat-radio-group>
+      <mat-error *ngIf="transactionForm.get('type')?.hasError('required')">
+        Transaction type is required
+      </mat-error>
+    </div>
+
+    <div class="col-12 mb-3">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Amount *</mat-label>
+        <input matInput type="number" formControlName="amount" />
+        <mat-error *ngIf="transactionForm.get('amount')?.hasError('required')">
+          Amount is required
+        </mat-error>
+        <mat-error *ngIf="transactionForm.get('amount')?.hasError('min')">
+          Amount must be greater than 0
+        </mat-error>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <mat-dialog-actions align="end" class="mt-3">
+    <button mat-button mat-dialog-close color="warn">Cancel</button>
+    <button mat-flat-button color="primary" type="submit" [disabled]="transactionForm.invalid">
+      Save Transaction
+    </button>
+  </mat-dialog-actions>
+</form>

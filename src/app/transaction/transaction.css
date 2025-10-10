@@ -1,0 +1,23 @@
+.transaction-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.transaction-table th,
+.transaction-table td {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+
+.type.credit {
+  color: green;
+  font-weight: bold;
+}
+
+.type.debit {
+  color: red;
+  font-weight: bold;
+}

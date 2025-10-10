@@ -1,6 +1,5 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { Party, PartyItem, Transaction } from '../party/party';
+import { PartyItem, Transaction } from '../party/party';
 import { TransactionService } from '../services/transaction.service';
 import { CommonModule, DecimalPipe, NgClass } from '@angular/common';
 

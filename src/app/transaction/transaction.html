@@ -2,7 +2,8 @@
   <thead>
     <tr>
       <th>Date</th>
-      <th>Description</th>
+      <th>Product</th>
+      <th>Remark</th>
       <th>Type</th>
       <th>Amount</th>
       <th>Balance</th>
@@ -11,13 +12,14 @@
   </thead>
   <tbody>
     <tr *ngFor="let txn of transactions">
-      <td>{{ txn.date }}</td>
-      <td>{{ txn.description }}</td>
+      <td>{{ txn.txDate | date:'dd-MM-yyyy' }}</td>
+      <td>{{ txn.product }}</td>
+      <td>{{ txn.remark }}</td>
       <td>
         <span class="type" [ngClass]="txn.type">{{ txn.type }}</span>
       </td>
-      <td>₱{{ txn.amount | number:'1.2-2' }}</td>
-      <td>₱{{ txn.balance | number:'1.2-2' }}</td>
+      <td>₹{{ txn.amount | number:'1.2-2' }}</td>
+      <td>₹{{ txn.balance | number:'1.2-2' }}</td>
       <td>
         <button class="icon-btn">✏️</button>
         <button class="icon-btn">🗑️</button>

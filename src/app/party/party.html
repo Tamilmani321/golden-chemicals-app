@@ -1,6 +1,12 @@
+<link
+  rel="stylesheet"
+  href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+/>
+
 <div class="container">
   <!-- Sidebar -->
   <aside class="sidebar">
+    <button class="btn primary" (click)="openAddPartyDialog()">➕ Add Party</button>
     <h2>Parties</h2>
     <input type="text" [(ngModel)]="searchTerm" placeholder="Search by name or mobile..." />
 
@@ -28,8 +34,9 @@
 
     <div class="actions">
       <button class="btn">🖨️ Print</button>
-      <button class="btn primary">➕ Add Transaction</button>
+      <button class="btn primary" (click)="openAddTransactionDialog()">➕ Add Transaction</button>
     </div>
      <app-transaction [party]="selectedParty"></app-transaction>
   </main>
 </div>
+

@@ -16,4 +16,12 @@ export class PartyService {
     });
     return this.http.get(this.apiUrl, { headers });
   }
+
+  saveParty(partyData: any, token: string): Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.post(this.apiUrl, partyData, { headers });
+  }
 }
