@@ -1,12 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule } from '@angular/material/dialog';
 import { PartyService } from '../services/partyService';
 
 @Component({
@@ -16,11 +12,7 @@ import { PartyService } from '../services/partyService';
   styleUrl: './add-party-dialog.css',
   imports: [
     CommonModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatDialogModule
+    ReactiveFormsModule
   ],
   providers: [PartyService]
 })
@@ -39,7 +31,7 @@ export class AddPartyDialog {
       location: ['', Validators.required]
     });
   }
-
+  
   onSave(): void {
     if (this.partyForm.valid) {
     const token = 'your-token-here'; // Replace with actual token logic
@@ -53,5 +45,9 @@ export class AddPartyDialog {
       }
     });
   }
+  }
+
+  closeModal(){
+    this.dialogRef.close();
   }
 }

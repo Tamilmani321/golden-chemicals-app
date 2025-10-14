@@ -11,6 +11,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { PartyItem } from '../party/party';
+import { TransactionService } from '../services/transaction.service';
 
 
 @Component({
@@ -32,32 +33,70 @@ import { PartyItem } from '../party/party';
 })
 export class AddTransactionDialogue {
   transactionForm: FormGroup;
-
+  
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<AddTransactionDialogue>,
-    @Inject(MAT_DIALOG_DATA) public data: { party: PartyItem }
-  ) {
+    @Inject(MAT_DIALOG_DATA) public data: { pid: number },
+    private transactionService: TransactionService
+  ) 
+  
+  {
     this.transactionForm = this.fb.group({
       txDate: ['', Validators.required],
       product: ['', Validators.required],
       remark: [''],
       type: ['', Validators.required],
       amount: [0, [Validators.required, Validators.min(1)]]
+      
     });
+    console.log('🆔 Party ID received in dialog:', data);
+    const partyid = data.pid;
+    console.log('🆔 Party ID extracted:', partyid);
   }
-
+  
   onSave(): void {
     if (this.transactionForm.valid) {
-      const transactionData = {
-        ...this.transactionForm.value,
-        // partyId: this.data.party.id
-      };
+      const token = localStorage.getItem('authToken') || '';
+       const transactionData = {
+      txDate: this.transactionForm.value.txDate, // should be ISO string
+      product: this.transactionForm.value.product,
+      remark: this.transactionForm.value.remark,
+      type: this.transactionForm.value.type,
+      amount: this.transactionForm.value.amount,
+      partyDto: {
+        id: this.data.pid
+      }
+    };
+    console.log('📦 JSON payload:', JSON.stringify(transactionData, null, 2));
 
-      console.log('✅ Transaction Data:', transactionData);
-      console.log('🧑 Active Party ID:', this.data);
-
-      this.dialogRef.close(transactionData);
-    }
+    // this.transactionService.saveTransaction(transactionData, token).subscribe({
+    //   next: (response) => {
+    //     console.log('✅ Transaction saved:', response);
+    //     this.dialogRef.close(response);
+    //   },
+    //   error: (err) => {
+    //     console.error('❌ Error saving transaction:', err);
+    //   }
+    // });
+    
+      this.transactionService.saveTransaction(transactionData, token).subscribe({
+      next: () => {
+        this.transactionService.getTransactionsByPartyId(transactionData.partyDto.id).subscribe({
+          next: (updatedTransactions) => {
+            console.log('🔁 Updated transactions:', updatedTransactions);
+            this.dialogRef.close(updatedTransactions); // send updated list back
+          },
+          error: (err) => {
+            console.error('❌ Failed to fetch updated transactions:', err);
+            this.dialogRef.close(); // still close, but without data
+          }
+        });
+      },
+      error: (err) => {
+        console.error('❌ Failed to save transaction:', err);
+      }
+    });
   }
+}
 }

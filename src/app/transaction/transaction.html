@@ -1,34 +1,67 @@
-<table class="transaction-table" *ngIf="transactions.length > 0">
-  <thead>
-    <tr>
-      <th>Date</th>
-      <th>Product</th>
-      <th>Remark</th>
-      <th>Type</th>
-      <th>Amount</th>
-      <th>Balance</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let txn of transactions">
-      <td>{{ txn.txDate | date:'dd-MM-yyyy' }}</td>
-      <td>{{ txn.product }}</td>
-      <td>{{ txn.remark }}</td>
-      <td>
-        <span class="type" [ngClass]="txn.type">{{ txn.type }}</span>
-      </td>
-      <td>₹{{ txn.amount | number:'1.2-2' }}</td>
-      <td>₹{{ txn.balance | number:'1.2-2' }}</td>
-      <td>
-        <button class="icon-btn">✏️</button>
-        <button class="icon-btn">🗑️</button>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-<!-- Optional: Empty state -->
-<div *ngIf="transactions.length === 0">
-  <p>No transactions found for this party.</p>
+<div class="transaction-panel">
+  <div class="transaction-header d-flex justify-content-between align-items-center mb-3">
+    <div class="d-flex align-items-center gap-2" style="max-width: 400px; font-size: 0.9rem;">
+  <div class="input-group" style="width: 220px;">
+    <span class="input-group-text">📅</span>
+    <input id="fpRange" class="form-control" placeholder="Date range" readonly>
+  </div>
+  <button id="fpClear" class="btn btn-outline-secondary">Clear</button>
+</div>
+    <div class="filters d-flex gap-2">
+      <select class="form-select">
+        <option>All Types</option>
+        <option>Credit</option>
+        <option>Debit</option>
+      </select>
+    </div>
+    <div class="actions d-flex gap-2">
+      <button class="btn btn-outline-info"  (click)="openAddTransactionDialog()">
+        <i class="bi bi-plus-square-dotted"></i> Add Transaction
+      </button>
+      <button class="btn btn-outline-dark">
+        <i class="fas fa-print me-1"></i> Print
+      </button>
+    </div>
+  </div>
+  
+  <div class="table-responsive" >
+    <table class="table table-bordered table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>Date</th>
+          <th>Product</th>
+          <th>Remark</th>
+          <th>Type</th>
+          <th>Amount</th>
+          <th>Balance</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody *ngIf="transactions.length > 0">
+        <tr *ngFor="let txn of transactions">
+          <td>{{ txn.txDate | date:'dd-MM-yyyy' }}</td>
+          <td>{{ txn.product }}</td>
+          <td>{{ txn.remark }}</td>
+          <td>
+            <span class="type" [ngClass]="txn.type">{{ txn.type | lowercase}}</span>
+          </td>
+          <td>
+          <span class="amount" [ngClass]="txn.type">₹{{ txn.amount | number:'1.2-2' }}</span>
+          </td>
+          <td>₹{{ txn.balance | number:'1.2-2' }}</td>
+          <td>
+            <button class="btn btn-sm btn-outline-primary me-1">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="btn btn-sm btn-outline-danger">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div *ngIf="transactions.length === 0" class="empty-state">
+    <p>No transactions found for this party.</p>
+  </div>
 </div>

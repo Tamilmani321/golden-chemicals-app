@@ -14,4 +14,11 @@ export class TransactionService {
   getTransactionsByPartyId(partyId: number): Observable<Transaction[]> {
     return this.http.get<Transaction[]>(`${this.baseUrl}/${partyId}`);
   }
+  saveTransaction(transaction: any, token:string): Observable<any> {
+    const heaeders = { 
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    };
+    return this.http.post<any>(`${this.baseUrl}`, transaction, { headers: heaeders });
+  }
 }

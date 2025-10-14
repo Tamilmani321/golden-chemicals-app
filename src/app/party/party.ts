@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { PartyService } from '../services/partyService';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TransactionComponent  } from '../transaction/transaction';
 import { MatDialog } from '@angular/material/dialog';
-import { AddPartyDialog } from '../add-party-dialog/add-party-dialog';
 import { AddTransactionDialogue } from '../add-transaction-dialogue/add-transaction-dialogue';
+import { AddPartyDialog } from '../add-party-dialog/add-party-dialog';
 
 
 
@@ -31,7 +31,7 @@ export interface PartyItem {
 @Component({
   selector: 'app-party',
   standalone: true,
-  imports: [CommonModule, FormsModule,TransactionComponent ],
+  imports: [CommonModule, FormsModule,TransactionComponent],
   templateUrl: './party.html',
   styleUrl: './party.css'
 })
@@ -40,7 +40,7 @@ export class Party implements OnInit {
   partyData: PartyItem[] = [];
   selectedParty: PartyItem | null = null;
   transactions: Transaction[] = [];
-  showAddPartyForm = false;
+  
 
   newParty = {
     name: '',
@@ -82,11 +82,19 @@ export class Party implements OnInit {
   });
 }
 
+ 
+
+
+
 openAddTransactionDialog(): void {
   console.log("Selected Party Id : "+this.selectedParty?.id);
   const dialogRef = this.dialog.open(AddTransactionDialogue,{
-  data: { party: this.selectedParty?.id }
-  
+  data: { pid: this.selectedParty?.id }
+}).afterClosed().subscribe((updatedTransactions) => {
+  if (updatedTransactions) {
+    this.transactions = updatedTransactions; // ✅ Refresh the list
+    console.log('🔁 Transactions updated in parent:', updatedTransactions);
+  }
 });
 
   

@@ -1,42 +1,55 @@
-<link
-  rel="stylesheet"
-  href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-<div class="container">
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <button class="btn primary" (click)="openAddPartyDialog()">➕ Add Party</button>
-    <h2>Parties</h2>
-    <input type="text" [(ngModel)]="searchTerm" placeholder="Search by name or mobile..." />
+<!-- Sidebar -->
+<aside class="sidebar">
+  
+  <button class="btn btn-outline-success btn-lg btn-block" style="width: 100%;" (click)="openAddPartyDialog()">
+    <i class="bi bi-person-add"></i>&nbsp;&nbsp;&nbsp;Add Party
+  </button>
+  <br>
+  <br>
+  <input
+    type="text"
+    class="form-control"
+    [(ngModel)]="searchTerm"
+    placeholder="Search by name or mobile..."
+  />
 
-    <div class="party-card"
-         *ngFor="let party of filteredParties"
-         [class.active]="party.id === selectedParty?.id"
-         (click)="selectParty(party)">
-      <div class="party-info">
-        <h3>{{ party.name }}</h3>
-        <p>{{ party.mobileNumber }}</p>
-      </div>
-      <div class="party-balance" [ngClass]="getBalanceClass(party.balance)">
-        ₱{{ party.balance | number:'1.2-2' }}
-      </div>
+  <div
+    class="party-card"
+    *ngFor="let party of filteredParties"
+    [class.active]="party.id === selectedParty?.id"
+    (click)="selectParty(party)">
+    <div class="party-avatar">
+    <i class="fas fa-user-circle"></i>
+  </div>
+    <div class="party-info">
+      <h3>{{ party.name }}</h3>
+      <p>{{ party.mobileNumber }}</p>
     </div>
-  </aside>
+  </div>
+</aside>
 
-  <!-- Main Content -->
-  <main class="main-content" *ngIf="selectedParty">
-    <div class="header">
-      <h2>{{ selectedParty.name }}</h2>
-      <p>📞 {{ selectedParty.mobileNumber }}</p>
-      <p class="balance">Current Balance: ₱{{ selectedParty.balance | number:'1.2-2' }}</p>
-    </div>
 
-    <div class="actions">
-      <button class="btn">🖨️ Print</button>
-      <button class="btn primary" (click)="openAddTransactionDialog()">➕ Add Transaction</button>
-    </div>
-     <app-transaction [party]="selectedParty"></app-transaction>
-  </main>
+
+<!-- Main Content -->
+<main class ="main-content" *ngIf="selectedParty">
+  <div class="header">
+    <h2>{{ selectedParty.name }}</h2>
+    <p class="phone-info d-flex align-items-center gap-2">
+  <i class="bi bi-telephone-outbound text-primary fs-5"></i>
+  <span style="color: rgb(86, 86, 86);">{{ selectedParty.mobileNumber }}</span>
+    </p>
+    <!-- <p class="balance">Current Balance: {{ 15000 | number: '1.2-2' }}</p> -->
+  <div class="balance-card">
+  <p class="label">Current Balance:</p>
+  <p class="amount">₹1500.00</p>
 </div>
 
+  </div>
+
+  <app-transaction
+    [party]="selectedParty"
+    [updatedTransactions]="transactions"
+  ></app-transaction>
+</main>

@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>Add New Party</h2>
+ <!-- <h2 mat-dialog-title>Add New Party</h2>
 
 <form [formGroup]="partyForm" (ngSubmit)="onSave()" mat-dialog-content>
   <mat-form-field appearance="outline" class="w-100">
@@ -34,4 +34,43 @@
       Save Party
     </button>
   </mat-dialog-actions>
-</form>
+</form>  -->
+<!-- Modal -->
+<!-- Modal -->
+<div class="modal fade show d-block flip-in" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow-lg">
+
+      <!-- Modal Header -->
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">Add New Party</h5>
+        <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="closeModal()"></button> 
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="partyName" class="form-label">Party Name</label>
+            <input type="text" class="form-control" id="partyName" placeholder="Enter party name" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="partyMobile" class="form-label">Mobile Number</label>
+            <input type="tel" class="form-control" id="partyMobile" maxlength="10" placeholder="Enter mobile number" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="partyLocation" class="form-label">Location</label>
+            <input type="text" class="form-control" id="partyLocation" placeholder="Enter location" required>
+          </div>
+
+          <div>
+            <button type="submit" class="btn btn-outline-primary"> Save Party</button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
