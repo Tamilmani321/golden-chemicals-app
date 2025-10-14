@@ -42,6 +42,7 @@
   color: green;
   font-weight: bold;
   padding: 2px 8px;
+  margin-left: -10px;
 }
 .amount.CREDIT {
   color: rgb(6, 119, 6);
@@ -50,18 +51,26 @@
 .type.DEBIT {
   background-color: rgb(255, 218, 218);
   border-radius: 20px;
-  color: rgb(238, 20, 20);
+  color: rgb(207, 57, 57);
   font-weight: bold;
   padding: 2px 8px;
+  margin-left: -10px;
 }
 
 .amount.DEBIT {
   color: rgb(224, 9, 9);
 }
 
-.btn-outline-info:hover {
-  color: #fff !important; /* white text */
+.btn-outline-info {
+  border-color: #6f42c1; /* custom border */
+  color: #6f42c1;         /* custom text */
 }
+
+.btn-outline-info:hover {
+  background-color: #6f42c1;
+  color: #fff;
+}
+
 
 
 

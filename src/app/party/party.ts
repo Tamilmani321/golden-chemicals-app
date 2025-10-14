@@ -41,6 +41,7 @@ export class Party implements OnInit {
   selectedParty: PartyItem | null = null;
   transactions: Transaction[] = [];
   
+  
 
   newParty = {
     name: '',
@@ -81,35 +82,17 @@ export class Party implements OnInit {
     }
   });
 }
-
  
-
-
-
-openAddTransactionDialog(): void {
-  console.log("Selected Party Id : "+this.selectedParty?.id);
-  const dialogRef = this.dialog.open(AddTransactionDialogue,{
-  data: { pid: this.selectedParty?.id }
-}).afterClosed().subscribe((updatedTransactions) => {
-  if (updatedTransactions) {
-    this.transactions = updatedTransactions; // ✅ Refresh the list
-    console.log('🔁 Transactions updated in parent:', updatedTransactions);
+ selectParty(party: PartyItem): void {
+    this.selectedParty = party;
+    console.log('Selected Party ID &&&&&&&&:', this.selectedParty.id);
   }
-});
-
-  
-}
     
   get filteredParties(): PartyItem[] {
     return this.partyData.filter(p =>
       p.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
       p.mobileNumber.includes(this.searchTerm)
     );
-  }
-
-  selectParty(party: PartyItem): void {
-    this.selectedParty = party;
-    this.selectedParty.id;
   }
 
   getBalanceClass(balance: number): string {

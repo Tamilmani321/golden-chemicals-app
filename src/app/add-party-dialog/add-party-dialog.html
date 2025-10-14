@@ -49,24 +49,24 @@
 
       <!-- Modal Body -->
       <div class="modal-body">
-        <form>
+        <form [formGroup]="partyForm" (ngSubmit)="onSave()" >
           <div class="mb-3">
             <label for="partyName" class="form-label">Party Name</label>
-            <input type="text" class="form-control" id="partyName" placeholder="Enter party name" required>
+            <input type="text" class="form-control" id="partyName" formControlName="name" placeholder="e.g., Sai Ram Enterprises" required>
           </div>
 
           <div class="mb-3">
             <label for="partyMobile" class="form-label">Mobile Number</label>
-            <input type="tel" class="form-control" id="partyMobile" maxlength="10" placeholder="Enter mobile number" required>
+            <input type="tel" class="form-control" id="partyMobile" maxlength="10" formControlName="mobileNumber" placeholder="e.g., 91123-45678">
           </div>
 
           <div class="mb-3">
             <label for="partyLocation" class="form-label">Location</label>
-            <input type="text" class="form-control" id="partyLocation" placeholder="Enter location" required>
+            <input type="text" class="form-control" id="partyLocation" formControlName="location" placeholder="e.g., coimbatore" required>
           </div>
 
           <div>
-            <button type="submit" class="btn btn-outline-primary"> Save Party</button>
+            <button type="submit" class="btn btn-outline-primary" [disabled]="partyForm.invalid"> Save Party</button>
           </div>
         </form>
       </div>

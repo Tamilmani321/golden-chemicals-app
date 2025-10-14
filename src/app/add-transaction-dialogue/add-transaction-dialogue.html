@@ -1,66 +1,57 @@
-<h2 mat-dialog-title>Add Transaction</h2>
+<!-- Modal -->
+<div class="modal fade show d-block add-transaction-form" tabindex="-1" role="dialog" (click)="closeModal()">
+  <div class="modal-dialog modal-dialog-centered" (click)="$event.stopPropagation()">
+    <div class="modal-content shadow bounce-in">
 
-<form [formGroup]="transactionForm" (ngSubmit)="onSave()" mat-dialog-content>
-  <div class="row">
-    <div class="col-12 mb-3">
-      <mat-form-field appearance="outline" class="w-100">
-  <mat-label>Date *</mat-label>
-  <input matInput [matDatepicker]="picker" formControlName="txDate" />
-  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-  <mat-datepicker #picker></mat-datepicker>
-  <!-- <mat-error *ngIf="transactionForm.get('txDate')?.hasError('required')">
-    Date is required
-  </mat-error> -->
-</mat-form-field>
+      <!-- Modal Header -->
+      <div class="modal-header add-transaction">
+        <h5 class="modal-title">Add Transaction</h5>
+        <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="closeModal()"></button>
+      </div>
 
-    </div>
+      <!-- Modal Body -->
+      <div class="modal-body">
+        <form (ngSubmit)="onSave()" [formGroup]="transactionForm">
+          <div class="mb-3">
+            <label class="form-label">Date </label>
+            <input type="date" class="form-control" formControlName="txDate" required />
+          </div>
 
-    <div class="col-12 mb-3">
-      <mat-form-field appearance="outline" class="w-100">
-        <mat-label>Product *</mat-label>
-        <input matInput formControlName="product" placeholder="e.g., Goods, Service" />
-        <mat-error *ngIf="transactionForm.get('product')?.hasError('required')">
-          Product is required
-        </mat-error>
-      </mat-form-field>
-    </div>
+          <div class="mb-3">
+            <label class="form-label">Product </label>
+            <input type="text" class="form-control" formControlName="product" placeholder="e.g., Goods, Service" required />
+          </div>
 
-    <div class="col-12 mb-3">
-      <mat-form-field appearance="outline" class="w-100">
-        <mat-label>Remark (Optional)</mat-label>
-        <textarea matInput formControlName="remark" placeholder="Any notes..."></textarea>
-      </mat-form-field>
-    </div>
+          <div class="mb-3">
+            <label class="form-label">Remark (Optional)</label>
+            <textarea class="form-control" formControlName="remark" placeholder="Any notes..."></textarea>
+          </div>
 
-    <div class="col-12 mb-3">
-      <label class="mb-2 d-block">Type *</label>
-      <mat-radio-group formControlName="type" class="d-flex gap-4">
-        <mat-radio-button value="CREDIT">Credit</mat-radio-button>
-        <mat-radio-button value="DEBIT">Debit</mat-radio-button>
-      </mat-radio-group>
-      <mat-error *ngIf="transactionForm.get('type')?.hasError('required')">
-        Transaction type is required
-      </mat-error>
-    </div>
+          <div class="mb-3">
+            <label class="form-label d-block mb-2">Type </label>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" formControlName="type" value="CREDIT" id="credit" />
+              <label class="form-check-label" for="credit">Credit</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" formControlName="type" value="DEBIT" id="debit" />
+              <label class="form-check-label" for="debit">Debit</label>
+            </div>
+          </div>
 
-    <div class="col-12 mb-3">
-      <mat-form-field appearance="outline" class="w-100">
-        <mat-label>Amount *</mat-label>
-        <input matInput type="number" formControlName="amount" />
-        <mat-error *ngIf="transactionForm.get('amount')?.hasError('required')">
-          Amount is required
-        </mat-error>
-        <mat-error *ngIf="transactionForm.get('amount')?.hasError('min')">
-          Amount must be greater than 0
-        </mat-error>
-      </mat-form-field>
+          <div class="mb-3">
+            <label class="form-label">Amount *</label>
+            <input type="text" class="form-control" [value]="formattedAmount" (input)="onAmountInput($event)" placeholder="Enter amount"required/>
+          </div>
+
+          <!-- Modal Footer -->
+          <div class="text-end mt-4">
+            <button type="button" class="btn btn-outline-secondary me-2" (click)="closeModal()">Cancel</button>
+            <button type="submit" class="btn btn-outline-info" [disabled]="transactionForm.invalid">Save Transaction</button>
+          </div>
+        </form>
+      </div>
+
     </div>
   </div>
-
-  <mat-dialog-actions align="end" class="mt-3">
-    <button mat-button mat-dialog-close color="warn">Cancel</button>
-    <button mat-flat-button color="primary" type="submit" [disabled]="transactionForm.invalid">
-      Save Transaction
-    </button>
-  </mat-dialog-actions>
-</form>
+</div>

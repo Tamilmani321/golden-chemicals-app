@@ -17,13 +17,15 @@ export class TransactionComponent  implements OnChanges, AfterViewInit{
  @Input() party: PartyItem | null = null;
  @Input() updatedTransactions: Transaction[] = [];
   transactions: Transaction[] = [];
-  selectedParty: PartyItem | null = null;
   selectedRange: string | null = null;
+  activePid: number | null = null;
   fp: any;
+  Math = Math; // Expose Math to the template
 
   constructor(private transactionService: TransactionService, private dialog: MatDialog) {}
 
   ngOnChanges(): void {
+    this.activePid = this.party ? this.party.id : null;
     if (this.party) {
       this.transactionService.getTransactionsByPartyId(this.party.id).subscribe({
         next: (data) => {
@@ -61,9 +63,9 @@ export class TransactionComponent  implements OnChanges, AfterViewInit{
     }
   }
   openAddTransactionDialog(): void {
-    console.log("Selected Party Id : "+this.selectedParty?.id);
+    console.log("Selected Party Id : "+this.activePid);
     const dialogRef = this.dialog.open(AddTransactionDialogue,{
-    data: { pid: this.selectedParty?.id }
+    data: { pid: this.activePid }
   }).afterClosed().subscribe((updatedTransactions) => {
     if (updatedTransactions) {
       this.transactions = updatedTransactions; // ✅ Refresh the list

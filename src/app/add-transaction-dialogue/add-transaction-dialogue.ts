@@ -33,6 +33,8 @@ import { TransactionService } from '../services/transaction.service';
 })
 export class AddTransactionDialogue {
   transactionForm: FormGroup;
+  formattedAmount = '';
+  originalAmount: number | null = null;
   
   constructor(
     private fb: FormBuilder,
@@ -59,7 +61,7 @@ export class AddTransactionDialogue {
     if (this.transactionForm.valid) {
       const token = localStorage.getItem('authToken') || '';
        const transactionData = {
-      txDate: this.transactionForm.value.txDate, // should be ISO string
+      txDate: new Date(this.transactionForm.value.txDate).toISOString(),
       product: this.transactionForm.value.product,
       remark: this.transactionForm.value.remark,
       type: this.transactionForm.value.type,
@@ -69,16 +71,6 @@ export class AddTransactionDialogue {
       }
     };
     console.log('📦 JSON payload:', JSON.stringify(transactionData, null, 2));
-
-    // this.transactionService.saveTransaction(transactionData, token).subscribe({
-    //   next: (response) => {
-    //     console.log('✅ Transaction saved:', response);
-    //     this.dialogRef.close(response);
-    //   },
-    //   error: (err) => {
-    //     console.error('❌ Error saving transaction:', err);
-    //   }
-    // });
     
       this.transactionService.saveTransaction(transactionData, token).subscribe({
       next: () => {
@@ -98,5 +90,31 @@ export class AddTransactionDialogue {
       }
     });
   }
+}
+closeModal(): void {
+    this.dialogRef.close();
+  }
+  onAmountInput(event: Event) {
+  const input = (event.target as HTMLInputElement).value.replace(/,/g, '');
+  const numericValue = parseInt(input, 10);
+
+  if (!isNaN(numericValue)) {
+    this.originalAmount = numericValue;
+    this.formattedAmount = this.formatIndianRupee(numericValue);
+    this.transactionForm.get('amount')?.setValue(numericValue);
+  } else {
+    this.originalAmount = null;
+    this.formattedAmount = '';
+    this.transactionForm.get('amount')?.setValue(null);
+  }
+}
+
+formatIndianRupee(value: number): string {
+  const x = value.toString();
+  const lastThree = x.substring(x.length - 3);
+  const otherNumbers = x.substring(0, x.length - 3);
+  return otherNumbers !== ''
+    ? otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ',') + ',' + lastThree
+    : lastThree;
 }
 }
