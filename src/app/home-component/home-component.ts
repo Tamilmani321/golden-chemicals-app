@@ -11,11 +11,6 @@ import { Router, RouterModule } from '@angular/router';
 export class HomeComponent implements OnInit {
   username: string | undefined;
 
-  // ngOnInit() {
-  //   //this.username = history.state['username'];
-  //   console.log('Username:', this.username);
-  // }
-
   ngOnInit() {
   this.username = history.state['username'];
   console.log('Username:', this.username);

@@ -10,12 +10,14 @@ import { AddPartyDialog } from '../add-party-dialog/add-party-dialog';
 
 
 export interface Transaction {
+  id: number;
   txDate: string;
   product: string;
   remark: string;
   type: 'credit' | 'debit';
   amount: number;
   balance: number;
+  selected?: boolean;
 }
 
 export interface PartyItem {
@@ -25,6 +27,13 @@ export interface PartyItem {
   address: string;
   balance: number;
   transactions: Transaction[];
+}
+
+export interface PagedResponse<T> {
+  content: T[];
+  totalPages: number;
+  number: number;
+  totalElements: number;
 }
 
 
@@ -40,6 +49,7 @@ export class Party implements OnInit {
   partyData: PartyItem[] = [];
   selectedParty: PartyItem | null = null;
   transactions: Transaction[] = [];
+  currentBalance: number = 0;
   
   
 
@@ -95,8 +105,10 @@ export class Party implements OnInit {
     );
   }
 
-  getBalanceClass(balance: number): string {
-    return balance < 0 ? 'red' : 'green';
+
+  getCurrentBalance(balance: number): void { 
+    console.log('Current Balance from Child:', balance);
+    this.currentBalance = balance;
   }
 
 }

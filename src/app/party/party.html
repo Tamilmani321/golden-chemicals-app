@@ -43,7 +43,7 @@
     <!-- <p class="balance">Current Balance: {{ 15000 | number: '1.2-2' }}</p> -->
   <div class="balance-card">
   <p class="label">Current Balance:</p>
-  <p class="amount">₹1500.00</p>
+  <p class="amount">₹{{ currentBalance | number:'1.2-2'}}</p> 
 </div>
 
   </div>
@@ -51,5 +51,6 @@
   <app-transaction
     [party]="selectedParty"
     [updatedTransactions]="transactions"
+    (currentBalanceEmit)="getCurrentBalance($event)"
   ></app-transaction>
 </main>

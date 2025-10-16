@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, EventEmitter, Inject, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
@@ -10,7 +10,6 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
-import { PartyItem } from '../party/party';
 import { TransactionService } from '../services/transaction.service';
 
 
@@ -35,6 +34,7 @@ export class AddTransactionDialogue {
   transactionForm: FormGroup;
   formattedAmount = '';
   originalAmount: number | null = null;
+  @Output() currentBalanceEmit = new EventEmitter<number>();
   
   constructor(
     private fb: FormBuilder,
@@ -74,10 +74,13 @@ export class AddTransactionDialogue {
     
       this.transactionService.saveTransaction(transactionData, token).subscribe({
       next: () => {
-        this.transactionService.getTransactionsByPartyId(transactionData.partyDto.id).subscribe({
+        
+        this.transactionService.getTransactionsByPartyId(transactionData.partyDto.id,0,10).subscribe({
           next: (updatedTransactions) => {
-            console.log('🔁 Updated transactions:', updatedTransactions);
-            this.dialogRef.close(updatedTransactions); // send updated list back
+            const data = updatedTransactions.content || [];
+            this.currentBalanceEmit.emit(data[0]?.balance || 0);
+            console.log('🔁 Updated transactions:', data);
+            this.dialogRef.close(data); // send updated list back
           },
           error: (err) => {
             console.error('❌ Failed to fetch updated transactions:', err);
