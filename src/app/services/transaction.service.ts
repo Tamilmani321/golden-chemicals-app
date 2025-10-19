@@ -47,4 +47,13 @@ getTransactionsByPartyId(
     };
     return this.http.put<any>(`${this.baseUrl}`, transaction, { headers: heaeders });
   }
+
+ deleteTransaction(txId: number, token: string): Observable<{ message: string }> {
+  const headers = {
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  };
+
+  return this.http.delete<{ message: string }>(`${this.baseUrl}/${txId}`, { headers });
+}
 }

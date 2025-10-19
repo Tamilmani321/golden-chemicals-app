@@ -45,13 +45,14 @@ export class EditTransactionDialog {
       amount: this.transactionForm.value.amount,
       id: this.transactionForm.value.txId
     };
-      this.transactionService.editTransaction(transactionData, token).subscribe({
+      this.transactionService.editTransaction(transactionData, token).subscribe({ // this.data.transaction.pid
       next: () => {
         this.transactionService.getTransactionsByPartyId(this.data.transaction.pid,0,10).subscribe({
           next: (updatedTransactions) => {
-         //   this.currentBalanceEmit.emit(updatedTransactions[0]?.balance || 0);
-            console.log('🔁 Updated transactions:', updatedTransactions);
-            this.dialogRef.close(updatedTransactions); // send updated list back
+            const data = updatedTransactions.content || [];
+        //    this.currentBalanceEmit.emit(data[0]?.balance || 0);
+            console.log('🔁 Updated transactions:', data);
+            this.dialogRef.close(data); // send updated list back
           },
           error: (err) => {
             console.error('❌ Failed to fetch updated transactions:', err);

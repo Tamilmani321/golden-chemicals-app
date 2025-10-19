@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnInit, Output, output, SimpleChanges } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, output, SimpleChanges } from '@angular/core';
 import { PartyItem, Transaction } from '../party/party';
 import { TransactionService } from '../services/transaction.service';
 import { CommonModule } from '@angular/common';
@@ -38,7 +38,7 @@ export class TransactionComponent implements OnChanges, AfterViewInit {
   currentPage: number = 0;
   pages: number [] = [];
 
-  constructor(private transactionService: TransactionService, private dialog: MatDialog) {} // 
+  constructor(private transactionService: TransactionService, private dialog: MatDialog, private cdRef: ChangeDetectorRef) {} // 
 
   ngOnChanges(changes: SimpleChanges): void {
     this.activePid = this.party?.id ?? null;
@@ -79,13 +79,88 @@ hasSelection(): boolean {
   return this.transactions.some(txn => txn.selected);
 }
 
-deleteSelected(): void {
-  const confirmed = confirm('Are you sure you want to delete selected transactions?');
-  if (confirmed) {
-    this.transactions = this.transactions.filter(txn => !txn.selected);
-    this.selectAll = false;
-  }
+// deleteCurrentTxn(txn: Transaction): void {
+//   const confirmed = confirm('Are you sure you want to delete this transaction?');
+//   if (!confirmed) return;
+
+//   const activePid = this.party?.id ?? 0;
+//   const token = localStorage.getItem('authToken') || '';
+
+//   console.log("Deleting transaction ID:", txn.id);
+
+//   // Call delete API and wait for response
+//   this.transactionService.deleteTransaction(txn.id, token).subscribe({
+//     next: () => {
+//       console.log(`Transaction ${txn.id} deleted successfully`);
+        
+//       // Reload transactions after successful delete
+//       this.transactionService
+//         .getTransactionsByPartyId(activePid, this.page, this.size)
+//         .subscribe({
+//           next: (response) => {
+//             const data = response.content || [];
+
+//             this.currentBalanceEmit.emit(data[0]?.balance || 0);
+//             this.allTransactions = data;
+//             this.transactions = [...data];
+
+//             this.totalPages = response.totalPages;
+//             this.currentPage = response.number;
+//             this.pages = Array.from({ length: this.totalPages }, (_, i) => i);
+//           },
+//           error: (err) => console.error('Error fetching transactions:', err)
+//         });
+//     },
+//     error: (err) => console.error('Error deleting transaction:', err)
+//   });
+// }
+
+deleteCurrentTxn(txn: Transaction): void {
+  const confirmed = confirm('Are you sure you want to delete this transaction?');
+  if (!confirmed) return;
+
+  const activePid = this.party?.id ?? 0;
+  const token = localStorage.getItem('authToken') || '';
+
+  console.log("Deleting transaction ID:", txn.id);
+
+  this.transactionService.deleteTransaction(txn.id, token).subscribe({
+    next: (response) => {
+      console.log(response.message); // ✅ Will show "Deleted"
+
+      // ✅ Optionally, show a popup/toast:
+      // alert('Transaction deleted successfully.');
+
+      // Reload updated transactions
+      this.transactionService.getTransactionsByPartyId(activePid, this.page, this.size)
+        .subscribe({
+          next: (response) => {
+            const data = response.content || [];
+
+            this.currentBalanceEmit.emit(data[0]?.balance || 0);
+            this.allTransactions = data;
+            this.transactions = [...data];
+
+            this.totalPages = response.totalPages;
+            this.currentPage = response.number;
+            this.pages = Array.from({ length: this.totalPages }, (_, i) => i);
+          },
+          error: (err) => console.error('Error fetching transactions:', err)
+        });
+    },
+    error: (err) => {
+      console.error('Error deleting transaction:', err);
+      alert('Error while deleting transaction.');
+    }
+  });
 }
+
+
+
+deleteSelected():void{
+
+}
+
 
   ngAfterViewInit(): void {
     this.fp = flatpickr('#fpRange', {
@@ -182,21 +257,12 @@ editTransaction(txn:any ): void {
     data: { mode: 'edit', transaction: { ...txn, pid:this.activePid } }
   });
 
-  dialog.afterClosed().subscribe((updatedTxn: Transaction | undefined) => {
-    if (updatedTxn) {
-      const token = localStorage.getItem('authToken') || ''; // or however you store it
-      this.transactionService.editTransaction(updatedTxn, token).subscribe({
-        next: (response) => {
-          this.transactions = response; // assuming backend returns updated txn
-        },
-        error: (err) => {
-          console.error('Failed to update transaction:', err);
-          alert('Update failed. Please try again.');
-        }
-      });
-    }
-  });
-  
+   dialog.afterClosed().subscribe((updatedTransactions) => {
+      if (updatedTransactions) {
+        this.transactions = [...updatedTransactions];
+        console.log("Transaction Data : "+this.transactions)
+      }
+    });
 }
 
 loadPage(page: number): void {

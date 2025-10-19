@@ -76,7 +76,10 @@ export class Party implements OnInit {
   }
 
   openAddPartyDialog(): void {
-  const dialogRef = this.dialog.open(AddPartyDialog);
+  const dialogRef = this.dialog.open(AddPartyDialog,{
+  width: '500px',
+  data: { existingParties: this.partyData } // Pass party list
+});
 
   dialogRef.afterClosed().subscribe((result) => {
     if (result) {
