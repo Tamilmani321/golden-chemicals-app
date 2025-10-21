@@ -205,6 +205,8 @@ deleteSelected():void{
       if (updatedTransactions) {
         this.allTransactions = updatedTransactions;
         this.transactions = [...updatedTransactions];
+        this.currentBalanceEmit.emit(updatedTransactions[0]?.balance || 0);
+        
       }
     });
   }
@@ -260,7 +262,7 @@ editTransaction(txn:any ): void {
    dialog.afterClosed().subscribe((updatedTransactions) => {
       if (updatedTransactions) {
         this.transactions = [...updatedTransactions];
-        console.log("Transaction Data : "+this.transactions)
+        this.currentBalanceEmit.emit(updatedTransactions[0]?.balance || 0);
       }
     });
 }

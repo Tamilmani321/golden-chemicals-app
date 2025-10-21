@@ -79,6 +79,7 @@ export class AddTransactionDialogue {
           next: (updatedTransactions) => {
             const data = updatedTransactions.content || [];
             this.currentBalanceEmit.emit(data[0]?.balance || 0);
+            console.log("Current Balance%%%$$$%%$$% : "+ data[0]?.balance);
             console.log('🔁 Updated transactions:', data);
             this.dialogRef.close(data); // send updated list back
           },

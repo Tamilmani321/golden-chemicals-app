@@ -75,24 +75,40 @@ export class Party implements OnInit {
     });
   }
 
+
   openAddPartyDialog(): void {
   const dialogRef = this.dialog.open(AddPartyDialog,{
   width: '500px',
   data: { existingParties: this.partyData } // Pass party list
 });
 
-  dialogRef.afterClosed().subscribe((result) => {
-    if (result) {
-      const newPartyItem: PartyItem = {
-        id: Date.now(),
-        name: result.name,
-        mobileNumber: result.mobileNumber,
-        address: result.location,
-        balance: 0,
-        transactions: []
-      };
-      this.partyData.push(newPartyItem);
-    }
+  // dialogRef.afterClosed().subscribe((result) => {
+  //   if (result) {
+  //     const newPartyItem: PartyItem = {
+  //       id: Date.now(),
+  //       name: result.name,
+  //       mobileNumber: result.mobileNumber,
+  //       address: result.location,
+  //       balance: 0,
+  //       transactions: []
+  //     };
+  //     this.partyData.push(newPartyItem);
+  //   }
+  // });
+    dialogRef.afterClosed().subscribe((result) => {
+      console.log("Result : "+result);
+      if(result){
+        this.partyService.getParties("").subscribe({
+        next: (data: PartyItem[]) => {
+        this.partyData = data;
+        console.log('Party data:', data);
+      },
+      error: (err) => {
+        console.error('Error fetching party data:', err);
+      }
+    });
+      }
+    
   });
 }
  
