@@ -10,6 +10,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatSelectModule } from '@angular/material/select';
 import { TransactionService } from '../services/transaction.service';
 
 
@@ -27,14 +28,17 @@ import { TransactionService } from '../services/transaction.service';
     MatRadioModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatDialogModule
+    MatDialogModule,
+    MatSelectModule
   ]
 })
 export class AddTransactionDialogue {
   transactionForm: FormGroup;
+  productList: string[] = ['Goods', 'Service', 'Software', 'Hardware', 'Consulting']
   formattedAmount = '';
   originalAmount: number | null = null;
   @Output() currentBalanceEmit = new EventEmitter<number>();
+  
   
   constructor(
     private fb: FormBuilder,
@@ -46,7 +50,7 @@ export class AddTransactionDialogue {
   {
     this.transactionForm = this.fb.group({
       txDate: ['', Validators.required],
-      product: ['', Validators.required],
+      products: [[], Validators.required], 
       remark: [''],
       type: ['', Validators.required],
       amount: [0, [Validators.required, Validators.min(1)]]
@@ -62,7 +66,7 @@ export class AddTransactionDialogue {
       const token = localStorage.getItem('authToken') || '';
        const transactionData = {
       txDate: new Date(this.transactionForm.value.txDate).toISOString(),
-      product: this.transactionForm.value.product,
+      products: this.transactionForm.value.products,
       remark: this.transactionForm.value.remark,
       type: this.transactionForm.value.type,
       amount: this.transactionForm.value.amount,
@@ -75,7 +79,7 @@ export class AddTransactionDialogue {
       this.transactionService.saveTransaction(transactionData, token).subscribe({
       next: () => {
         
-        this.transactionService.getTransactionsByPartyId(transactionData.partyDto.id,0,10).subscribe({
+        this.transactionService.getTransactionsByPartyId(transactionData.partyDto.id,0,5).subscribe({
           next: (updatedTransactions) => {
             const data = updatedTransactions.content || [];
             this.currentBalanceEmit.emit(data[0]?.balance || 0);
