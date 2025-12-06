@@ -21,7 +21,7 @@ export class TransactionComponent implements OnChanges, AfterViewInit {
   @Input() party: PartyItem | null = null;
   @Input() updatedTransactions: Transaction[] = [];
   @Output() currentBalanceEmit = new EventEmitter<number>();
-
+  // @Input() party!: Party;
 
   allTransactions: Transaction[] = []; // Full list
   transactions: Transaction[] = [];    // Filtered list
@@ -32,7 +32,7 @@ export class TransactionComponent implements OnChanges, AfterViewInit {
   selectAll: boolean = false;
   //
   page: number = 0;
-  size: number = 10;
+  size: number = 5;
   loading = false;
   totalPages: number = 0;
   currentPage: number = 0;
@@ -79,41 +79,6 @@ hasSelection(): boolean {
   return this.transactions.some(txn => txn.selected);
 }
 
-// deleteCurrentTxn(txn: Transaction): void {
-//   const confirmed = confirm('Are you sure you want to delete this transaction?');
-//   if (!confirmed) return;
-
-//   const activePid = this.party?.id ?? 0;
-//   const token = localStorage.getItem('authToken') || '';
-
-//   console.log("Deleting transaction ID:", txn.id);
-
-//   // Call delete API and wait for response
-//   this.transactionService.deleteTransaction(txn.id, token).subscribe({
-//     next: () => {
-//       console.log(`Transaction ${txn.id} deleted successfully`);
-        
-//       // Reload transactions after successful delete
-//       this.transactionService
-//         .getTransactionsByPartyId(activePid, this.page, this.size)
-//         .subscribe({
-//           next: (response) => {
-//             const data = response.content || [];
-
-//             this.currentBalanceEmit.emit(data[0]?.balance || 0);
-//             this.allTransactions = data;
-//             this.transactions = [...data];
-
-//             this.totalPages = response.totalPages;
-//             this.currentPage = response.number;
-//             this.pages = Array.from({ length: this.totalPages }, (_, i) => i);
-//           },
-//           error: (err) => console.error('Error fetching transactions:', err)
-//         });
-//     },
-//     error: (err) => console.error('Error deleting transaction:', err)
-//   });
-// }
 
 deleteCurrentTxn(txn: Transaction): void {
   const confirmed = confirm('Are you sure you want to delete this transaction?');
@@ -211,46 +176,119 @@ deleteSelected():void{
     });
   }
 
- printTransactions(): void {
-  const printContent = document.getElementById('printSection');
-  if (!printContent) return;
+//  printTransactions(): void {
+//   const printContent = document.getElementById('printSection');
+//   if (!printContent) return;
 
-  // Clone the table to avoid modifying the actual DOM
-  const clonedTable = printContent.cloneNode(true) as HTMLElement;
+//   // Clone the table to avoid modifying the actual DOM
+//   const clonedTable = printContent.cloneNode(true) as HTMLElement;
 
-  // Remove all elements marked as non-printable
-  const nonPrintableElements = clonedTable.querySelectorAll('.non-printable');
-  nonPrintableElements.forEach(el => el.remove());
+//   // Remove all elements marked as non-printable
+//   const nonPrintableElements = clonedTable.querySelectorAll('.non-printable');
+//   nonPrintableElements.forEach(el => el.remove());
 
-  // Open system print dialog
-  const printWindow = window.open('', '', 'width=900,height=650');
-  if (printWindow) {
-    printWindow.document.write(`
-      <html>
-        <head>
-          <title>Transaction Details</title>
-          <link rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-          <style>
-            body { font-family: Arial, sans-serif; margin: 20px; }
-            table { width: 100%; border-collapse: collapse; }
-            th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-            th { background-color: #f8f9fa; }
-            .CREDIT { color: green; font-weight: 600; }
-            .DEBIT { color: red; font-weight: 600; }
-            h4, p { text-align: center; margin: 0; }
-          </style>
-        </head>
-        <body>
-          ${clonedTable.outerHTML}
-        </body>
-      </html>
-    `);
-    printWindow.document.close();
-    printWindow.focus();
-    printWindow.print();
-  }
+//   // Open system print dialog
+//   const printWindow = window.open('', '', 'width=900,height=650');
+//   if (printWindow) {
+//     printWindow.document.write(`
+//       <html>
+//         <head>
+//           <title>Transaction Details</title>
+//           <link rel="stylesheet"
+//             href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+//           <style>
+//             body { font-family: Arial, sans-serif; margin: 20px; }
+//             table { width: 100%; border-collapse: collapse; }
+//             th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+//             th { background-color: #f8f9fa; }
+//             .CREDIT { color: green; font-weight: 600; }
+//             .DEBIT { color: pink; font-weight: 600; }
+//             h4, p { text-align: center; margin: 0; }
+//           </style>
+//         </head>
+//         <body>
+//           ${clonedTable.outerHTML}
+//         </body>
+//       </html>
+//     `);
+//     printWindow.document.close();
+//     printWindow.focus();
+//     printWindow.print();
+//   }
+// }
+
+printTransactions(): void {
+  if (!this.party?.id) return;
+
+  this.transactionService.getAllTransactionsByPartyId(this.party.id).subscribe(allTxns => {
+    let tableHtml = `
+      <table class="table table-bordered table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>Date</th>
+            <th>Product</th>
+            <th>Remark</th>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Balance</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+    allTxns.forEach(txn => {
+      const typeClass = txn.type.toUpperCase(); // normalize to uppercase
+      tableHtml += `
+        <tr>
+          <td>${new Date(txn.txDate).toLocaleDateString('en-GB')}</td>
+          <td>${txn.product}</td>
+          <td>${txn.remark}</td>
+          <td class="${typeClass}">
+            ${typeClass === 'CREDIT' ? '⬇️' : '⬆️'} ${txn.type}
+          </td>
+          <td class="${typeClass}">₹${Math.abs(txn.amount).toFixed(2)}</td>
+          <td>₹${txn.balance.toFixed(2)}</td>
+        </tr>
+      `;
+    });
+
+    tableHtml += `</tbody></table>`;
+
+    const printWindow = window.open('', '', 'width=900,height=650');
+    if (printWindow) {
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>Transaction Details</title>
+            <link rel="stylesheet"
+              href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+            <style>
+              body { font-family: Arial, sans-serif; margin: 20px; }
+              table { width: 100%; border-collapse: collapse; }
+              th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+              th { background-color: #f8f9fa; }
+              .CREDIT { color: green; font-weight: 600; }
+              .DEBIT { color: red; font-weight: 600; }
+              h4, p { text-align: center; margin: 0; }
+            </style>
+          </head>
+          <body>
+            <h4>Transaction Details</h4>
+            <p><strong>Party:</strong> ${this.party?.name || ''}</p>
+            <p><strong>Mobile:</strong> ${this.party?.mobileNumber || ''}</p>
+            <br>
+            ${tableHtml}
+          </body>
+        </html>
+      `);
+      printWindow.document.close();
+      printWindow.focus();
+      printWindow.print();
+    }
+  });
 }
+
+
 
 editTransaction(txn:any ): void {
   console.log("Transaction Data : "+txn);
@@ -271,7 +309,7 @@ loadPage(page: number): void {
   const pid = this.party?.id ?? 0;
   this.loading = true;
 
-  this.transactionService.getTransactionsByPartyId(pid, page, 10).subscribe({
+  this.transactionService.getTransactionsByPartyId(pid, page, 5).subscribe({
     next: (data) => {
       this.transactions = data.content;
       this.totalPages = data.totalPages;
@@ -290,5 +328,22 @@ goToPage(page: number): void {
   if (page >= 0 && page < this.totalPages) {
     this.loadPage(page);
   }
+}
+sendWhatsAppMessage(): void {
+  const phoneNumber = this.party?.mobileNumber;
+  if (!phoneNumber) return;
+
+  // Build message from all transactions
+  let message = `Hello ${this.party?.name}, here are your latest transactions:\n\n`;
+
+  this.transactions.forEach(txn => {
+    message += `${new Date(txn.txDate).toLocaleDateString('en-GB')} | ${txn.product} | ${txn.remark} | ${txn.type} | ₹${Math.abs(txn.amount).toFixed(2)} | Balance: ₹${txn.balance.toFixed(2)}\n`;
+  });
+
+  // Encode for WhatsApp
+  const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+
+  // Open WhatsApp in new tab
+  window.open(url, '_blank');
 }
 }

@@ -30,6 +30,11 @@ getTransactionsByPartyId(
   return this.http.get<PagedResponse<Transaction>>(`${this.baseUrl}/${partyId}`, { params });
 }
 
+getAllTransactionsByPartyId(partyId: number): Observable<Transaction[]> {
+  return this.http.get<Transaction[]>(`${this.baseUrl}/all/${partyId}`);
+}
+
+
 
 
   saveTransaction(transaction: any, token:string): Observable<any> {

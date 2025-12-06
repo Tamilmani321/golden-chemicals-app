@@ -17,10 +17,23 @@
             <input type="date" class="form-control" formControlName="txDate" required />
           </div>
 
-          <div class="mb-3">
+          <!-- <div class="mb-3">
             <label class="form-label">Product </label>
             <input type="text" class="form-control" formControlName="product" placeholder="e.g., Goods, Service" required />
-          </div>
+          </div> -->
+         <mat-form-field appearance="fill" class="w-100 mb-3" [hideRequiredMarker]="true">
+  <mat-label>Products</mat-label>
+  <mat-select formControlName="products" multiple >
+    <mat-option *ngFor="let product of productList" [value]="product"
+      style="background-color:#e6ffe6; color:#000; padding:6px; margin:2px 0;">
+      {{ product }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+
+
+
 
           <div class="mb-3">
             <label class="form-label">Remark (Optional)</label>

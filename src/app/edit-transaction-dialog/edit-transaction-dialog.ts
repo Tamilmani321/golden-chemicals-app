@@ -47,7 +47,7 @@ export class EditTransactionDialog {
     };
       this.transactionService.editTransaction(transactionData, token).subscribe({ // this.data.transaction.pid
       next: () => {
-        this.transactionService.getTransactionsByPartyId(this.data.transaction.pid,0,10).subscribe({
+        this.transactionService.getTransactionsByPartyId(this.data.transaction.pid,0,5).subscribe({
           next: (updatedTransactions) => {
             const data = updatedTransactions.content || [];
         //    this.currentBalanceEmit.emit(data[0]?.balance || 0);
