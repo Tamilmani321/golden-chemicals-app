@@ -237,12 +237,12 @@ printTransactions(): void {
     `;
 
     allTxns.forEach(txn => {
-      const typeClass = txn.type.toUpperCase(); // normalize to uppercase
+      const typeClass = txn.type?.trim().toUpperCase(); // safer normalization
       tableHtml += `
         <tr>
           <td>${new Date(txn.txDate).toLocaleDateString('en-GB')}</td>
-          <td>${txn.product}</td>
-          <td>${txn.remark}</td>
+          <td>${txn.product || ''}</td>
+          <td>${txn.remark || ''}</td>
           <td class="${typeClass}">
             ${typeClass === 'CREDIT' ? '⬇️' : '⬆️'} ${txn.type}
           </td>
@@ -267,8 +267,8 @@ printTransactions(): void {
               table { width: 100%; border-collapse: collapse; }
               th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
               th { background-color: #f8f9fa; }
-              .CREDIT { color: green; font-weight: 600; }
-              .DEBIT { color: red; font-weight: 600; }
+              .CREDIT { color: green !important; font-weight: 600; }
+              .DEBIT { color: pink !important; font-weight: 600; }
               h4, p { text-align: center; margin: 0; }
             </style>
           </head>
@@ -283,10 +283,11 @@ printTransactions(): void {
       `);
       printWindow.document.close();
       printWindow.focus();
-      printWindow.print();
+      printWindow.print(); // user can choose "Save as PDF"
     }
   });
 }
+
 
 
 
@@ -329,21 +330,93 @@ goToPage(page: number): void {
     this.loadPage(page);
   }
 }
-sendWhatsAppMessage(): void {
-  const phoneNumber = this.party?.mobileNumber;
-  if (!phoneNumber) return;
+// sendWhatsAppMessage(): void {
+//   const phoneNumber = this.party?.mobileNumber;
+//   if (!phoneNumber) return;
 
-  // Build message from all transactions
-  let message = `Hello ${this.party?.name}, here are your latest transactions:\n\n`;
+//   // Build message from all transactions
+//   let message = `Hello ${this.party?.name}, here are your latest transactions:\n\n`;
 
-  this.transactions.forEach(txn => {
-    message += `${new Date(txn.txDate).toLocaleDateString('en-GB')} | ${txn.product} | ${txn.remark} | ${txn.type} | ₹${Math.abs(txn.amount).toFixed(2)} | Balance: ₹${txn.balance.toFixed(2)}\n`;
+//   this.transactions.forEach(txn => {
+//     message += `${new Date(txn.txDate).toLocaleDateString('en-GB')} | ${txn.product} | ${txn.remark} | ${txn.type} | ₹${Math.abs(txn.amount).toFixed(2)} | Balance: ₹${txn.balance.toFixed(2)}\n`;
+//   });
+
+//   // Encode for WhatsApp
+//   const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+
+//   // Open WhatsApp in new tab
+//   window.open(url, '_blank');
+// }
+saveTransactionsAsPdf(): void {
+  if (!this.party?.id) return;
+
+  this.transactionService.getAllTransactionsByPartyId(this.party.id).subscribe(allTxns => {
+    let tableHtml = `
+      <table class="table table-bordered table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>Date</th>
+            <th>Product</th>
+            <th>Remark</th>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Balance</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+    allTxns.forEach(txn => {
+      const typeClass = txn.type?.trim().toUpperCase(); // safer class assignment
+      tableHtml += `
+        <tr>
+          <td>${new Date(txn.txDate).toLocaleDateString('en-GB')}</td>
+          <td>${txn.product || ''}</td>
+          <td>${txn.remark || ''}</td>
+          <td class="${typeClass}">
+            ${typeClass === 'CREDIT' ? '⬇️' : '⬆️'} ${txn.type}
+          </td>
+          <td class="${typeClass}">₹${Math.abs(txn.amount).toFixed(2)}</td>
+          <td>₹${txn.balance.toFixed(2)}</td>
+        </tr>
+      `;
+    });
+
+    tableHtml += `</tbody></table>`;
+
+    const printWindow = window.open('', '', 'width=900,height=650');
+    if (printWindow) {
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>Transaction Details</title>
+            <link rel="stylesheet"
+              href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+            <style>
+              body { font-family: Arial, sans-serif; margin: 20px; }
+              table { width: 100%; border-collapse: collapse; }
+              th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+              th { background-color: #f8f9fa; }
+              .CREDIT { color: green !important; font-weight: 600; }
+              .DEBIT { color: pink !important; font-weight: 600; }
+              h4, p { text-align: center; margin: 0; }
+            </style>
+          </head>
+          <body>
+            <h4>Transaction Details</h4>
+            <p><strong>Party:</strong> ${this.party?.name || ''}</p>
+            <p><strong>Mobile:</strong> ${this.party?.mobileNumber || ''}</p>
+            <br>
+            ${tableHtml}
+          </body>
+        </html>
+      `);
+      printWindow.document.close();
+      printWindow.focus();
+      printWindow.print(); // triggers browser's Save as PDF
+    }
   });
-
-  // Encode for WhatsApp
-  const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-
-  // Open WhatsApp in new tab
-  window.open(url, '_blank');
 }
+
+
 }

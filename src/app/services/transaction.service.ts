@@ -42,6 +42,7 @@ getAllTransactionsByPartyId(partyId: number): Observable<Transaction[]> {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
     };
+    console.log('In service:', transaction.products);
     return this.http.post<any>(`${this.baseUrl}`, transaction, { headers: heaeders });
   }
 

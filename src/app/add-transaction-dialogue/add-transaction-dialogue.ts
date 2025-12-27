@@ -34,7 +34,21 @@ import { TransactionService } from '../services/transaction.service';
 })
 export class AddTransactionDialogue {
   transactionForm: FormGroup;
-  productList: string[] = ['Goods', 'Service', 'Software', 'Hardware', 'Consulting']
+  productList: string[] = [
+  'SAFOLITE',
+  'HYDROES',
+  'BICARBONATE',
+  'RB',
+  'DENSE SODA',
+  'S. BAG',
+  'W. BAG',
+  'SNL BAG',
+  'NATURAL BAG',
+  'NANA BAG',
+  'SOAP',
+  'OIL',
+  'OTHERS'
+];
   formattedAmount = '';
   originalAmount: number | null = null;
   @Output() currentBalanceEmit = new EventEmitter<number>();
