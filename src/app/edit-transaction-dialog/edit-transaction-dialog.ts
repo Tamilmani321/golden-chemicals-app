@@ -24,9 +24,11 @@ export class EditTransactionDialog {
    {
     const txn = data.transaction;
     console.log("PID : "+txn.pid);
+    const initialProduct = txn.product ?? (Array.isArray(txn.products) && txn.products.length ? txn.products[0] : '');
+
     this.transactionForm = this.fb.group({
       txDate: [txn.txDate ? txn.txDate.split('T')[0] : '', Validators.required],
-      product: [txn.product, Validators.required],
+      product: [initialProduct, Validators.required],
       remark: [txn.remark],
       type: [txn.type, Validators.required],
       amount: [Math.abs(txn.amount), [Validators.required, Validators.min(1)]],
@@ -37,14 +39,18 @@ export class EditTransactionDialog {
   onUpdate(): void {
     if (this.transactionForm.valid) {
       const token = localStorage.getItem('authToken') || '';
+       const productValue = this.transactionForm.value.product;
        const transactionData = {
       txDate: new Date(this.transactionForm.value.txDate).toISOString(),
-      product: this.transactionForm.value.product,
+      product: productValue,
+      products: [productValue],
       remark: this.transactionForm.value.remark,
       type: this.transactionForm.value.type,
       amount: this.transactionForm.value.amount,
-      id: this.transactionForm.value.txId
+      id: this.transactionForm.value.txId,
+      partyDto: { id: this.data.transaction.pid }
     };
+      console.log('📦 Edit payload:', JSON.stringify(transactionData, null, 2));
       this.transactionService.editTransaction(transactionData, token).subscribe({ // this.data.transaction.pid
       next: () => {
         this.transactionService.getTransactionsByPartyId(this.data.transaction.pid,0,5).subscribe({
