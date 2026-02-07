@@ -3,7 +3,7 @@
 ---
 
 ## 🐛 BUGS FOUND
-
+n
 ### **BUG #1: Amount Input Accepts Decimal Values (Parse Error)**
 **Location:** `add-transaction-dialogue.ts` & `edit-transaction-dialog.ts` → `onAmountInput()`
 **Severity:** HIGH

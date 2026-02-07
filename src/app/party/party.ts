@@ -12,12 +12,14 @@ import { AddPartyDialog } from '../add-party-dialog/add-party-dialog';
 export interface Transaction {
   id: number;
   txDate: string;
-  product: string;
+  product?: string;
+  products?: string[];
   remark: string;
   type: 'credit' | 'debit';
   amount: number;
   balance: number;
   selected?: boolean;
+  pid?: number;
 }
 
 export interface PartyItem {
