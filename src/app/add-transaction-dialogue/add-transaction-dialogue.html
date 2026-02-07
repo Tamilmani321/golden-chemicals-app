@@ -49,7 +49,7 @@
 
           <div class="mb-3">
             <label class="form-label">Amount *</label>
-            <input type="text" class="form-control" [value]="formattedAmount" (input)="onAmountInput($event)" placeholder="Enter amount"required/>
+            <input type="text" class="form-control" formControlName="amount" [value]="formattedAmount" (input)="onAmountInput($event)" placeholder="Enter amount" required/>
           </div>
 
           <!-- Modal Footer -->

@@ -54,7 +54,12 @@
               <input type="checkbox" [(ngModel)]="txn.selected" (change)="updateSelectionState()" />
           </td>
           <td>{{ txn.txDate | date:'dd-MM-yyyy' }}</td>
-          <td>{{ txn.product }}</td>
+          <td>
+            <span *ngIf="txn.product">{{ txn.product }}</span>
+            <span *ngIf="txn.products && txn.products.length">
+              {{ txn.products.join(', ') }}
+            </span>
+          </td>
           <td>{{ txn.remark }}</td>
           <td>
           <span class="type" [ngClass]="txn.type">

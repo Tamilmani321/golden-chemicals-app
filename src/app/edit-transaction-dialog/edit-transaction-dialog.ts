@@ -79,9 +79,9 @@ export class EditTransactionDialog {
   }
   onAmountInput(event: Event) {
   const input = (event.target as HTMLInputElement).value.replace(/,/g, '');
-  const numericValue = parseInt(input, 10);
+  const numericValue = parseFloat(input);
 
-  if (!isNaN(numericValue)) {
+  if (!isNaN(numericValue) && numericValue > 0) {
     this.originalAmount = numericValue;
     this.formattedAmount = this.formatIndianRupee(numericValue);
     this.transactionForm.get('amount')?.setValue(numericValue);
@@ -93,12 +93,11 @@ export class EditTransactionDialog {
 }
 
 formatIndianRupee(value: number): string {
-  const x = value.toString();
-  const lastThree = x.substring(x.length - 3);
-  const otherNumbers = x.substring(0, x.length - 3);
-  return otherNumbers !== ''
-    ? otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ',') + ',' + lastThree
-    : lastThree;
+  return value.toLocaleString('en-IN', {
+    style: 'decimal',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
 }
 
 }
